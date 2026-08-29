@@ -1,0 +1,104 @@
+{
+  "generated_at": "2026-08-28T00:27:49.352829",
+  "seed": 20260831,
+  "config": {
+    "history_years": 3,
+    "history_end": "2026-08-01",
+    "bucket_hours": 6,
+    "grid_res_deg": 0.1,
+    "total_customers": 3200000,
+    "total_population": 8000000
+  },
+  "tables": {
+    "gis_asset_extract": {
+      "rows": 3567,
+      "cols": 34
+    },
+    "cmms_work_orders": {
+      "rows": 8115,
+      "cols": 10
+    },
+    "network_edges": {
+      "rows": 3730,
+      "cols": 3
+    },
+    "asset_consequence": {
+      "rows": 3515,
+      "cols": 8
+    },
+    "scenarios": {
+      "rows": 126,
+      "cols": 26
+    },
+    "hazard_exposure": {
+      "rows": 3318160,
+      "cols": 16
+    },
+    "failure_events": {
+      "rows": 2491,
+      "cols": 8
+    },
+    "training_table": {
+      "rows": 442890,
+      "cols": 54
+    },
+    "scada_telemetry": {
+      "rows": 1140546,
+      "cols": 6
+    },
+    "scada_labels": {
+      "rows": 66,
+      "cols": 3
+    },
+    "crews": {
+      "rows": 172,
+      "cols": 8
+    },
+    "depots": {
+      "rows": 15,
+      "cols": 5
+    },
+    "_assets_truth": {
+      "rows": 3515,
+      "cols": 34
+    }
+  },
+  "summary": {
+    "assets": 3515,
+    "asset_classes": {
+      "transmission_span": 900,
+      "water_main": 800,
+      "distribution_feeder": 700,
+      "distribution_substation": 350,
+      "pump_station": 300,
+      "recloser": 200,
+      "storage_tank": 150,
+      "transmission_substation": 60,
+      "raw_water_intake": 40,
+      "water_treatment_plant": 15
+    },
+    "network_edges": 3730,
+    "power_dependency_edges": 315,
+    "scenarios": 126,
+    "scenarios_by_hazard": {
+      "baseline": 78,
+      "inland_flood": 18,
+      "heatwave": 15,
+      "wildfire": 9,
+      "hurricane": 6
+    },
+    "failure_events": 2491,
+    "failures_by_hazard": {
+      "heatwave": 747,
+      "hurricane": 619,
+      "baseline": 484,
+      "wildfire": 430,
+      "inland_flood": 211
+    },
+    "functional_cascade_failures": 184,
+    "exposure_rows": 3318160,
+    "overall_failure_rate_per_asset_bucket": 0.000751,
+    "training_rows": 442890,
+    "training_positive_rate": 0.00521
+  }
+}
