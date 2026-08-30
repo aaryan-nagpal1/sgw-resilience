@@ -1,6 +1,27 @@
+# Core data + modelling
 numpy>=2.0
 pandas>=2.2
-networkx>=3.3
 pyarrow>=17.0
+networkx>=3.3
+scipy>=1.14
+
+# W1 risk model
 scikit-learn>=1.5
 lightgbm>=4.5
+
+# W2 dispatch optimiser
+ortools>=9.11
+
+# W3 assistant (tool schemas)
+pydantic>=2.9
+
+# Figures
+matplotlib>=3.9
+
+# Prototype UI
+streamlit>=1.40
+pydeck>=0.9
+
+# Optional: only needed to run the copilot against Claude rather than the
+# built-in deterministic router. Everything runs without it.
+anthropic>=0.40
