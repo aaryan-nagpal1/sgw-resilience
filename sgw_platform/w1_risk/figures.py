@@ -134,3 +134,43 @@ def sensitivity_plot(sweep: pd.DataFrame, path):
     ax.set_ylabel("advantage over best baseline (%)")
     ax.set_title("The conclusion holds across the plausible range")
     return _save(fig, path)
+
+
+def value_sensitivity_plot(path, low=0.102, mid=0.140, high=0.191,
+                           max_spend_m=120):
+    """Executive value chart.
+
+    Deliberately contains NO invented cost baseline. It is a straight
+    transformation of the measured improvement range onto whatever annual
+    response spend SGW actually has, so a reader locates their own number on
+    the x-axis rather than being told one. That keeps the briefing's claim --
+    "a financial ROI cannot yet be stated responsibly" -- intact while still
+    giving leadership something quantitative to act on.
+    """
+    spend = np.linspace(0, max_spend_m, 200)
+    fig, ax = plt.subplots(figsize=(5.6, 3.2))
+    ax.fill_between(spend, spend * low, spend * high, color=BLUE, alpha=0.16,
+                    label=f"range across tested assumptions ({low:.0%}–{high:.0%})")
+    ax.plot(spend, spend * mid, color=BLUE, lw=1.8,
+            label=f"measured improvement ({mid:.1%})")
+
+    # One worked read-off so the chart teaches its own use.
+    x = 40
+    ax.plot([x, x], [0, x * high], ls=":", lw=0.9, color=GREY)
+    ax.plot([0, x], [x * mid, x * mid], ls=":", lw=0.9, color=GREY)
+    ax.annotate(f"at \\${x}M annual response spend,\n"
+                f"\\${x*low:.1f}M–\\${x*high:.1f}M a year",
+                xy=(x, x * mid), xytext=(x + 8, x * mid - 5.5),
+                fontsize=7.5, color=NAVY,
+                arrowprops=dict(arrowstyle="-", lw=0.6, color=GREY))
+
+    ax.set_xlabel("SGW annual weather-related response spend ($M)")
+    ax.set_ylabel("indicative annual value ($M)")
+    ax.set_title("Value scales with what response already costs SGW")
+    ax.set_xlim(0, max_spend_m)
+    ax.set_ylim(0, max_spend_m * high * 1.02)
+    ax.legend(frameon=False, fontsize=7.5, loc="upper left")
+    ax.text(0.5, -0.30, "Phase 0 establishes SGW's actual spend. "
+            "Programme cost is not shown and is not yet known.",
+            transform=ax.transAxes, ha="center", fontsize=7, color=GREY)
+    return _save(fig, path)

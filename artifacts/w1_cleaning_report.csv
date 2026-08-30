@@ -1,0 +1,7 @@
+step,records_detected,action,note
+material normalisation,13,13 raw values -> 13 canonical,free-text CMMS variants collapsed
+diameter unit reconciliation,217,converted inches -> mm by value range,0 records where the stated unit column disagreed
+duplicate asset records,46,flagged; first record retained as canonical,matched on class + vintage + 150 m proximity
+missing install year,265,imputed by per-class regression on condition score,median fallback; imputation flag carried into the model
+positional uncertainty,117,flagged; hazard sampled over a wider radius for these,"digitised from paper maps, 50-400 m error"
+stale condition score,1060,flagged; condition down-weighted where stale,last inspected more than 5 years ago

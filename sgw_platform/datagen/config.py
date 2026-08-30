@@ -54,6 +54,18 @@ LINEAR_CLASSES = {"transmission_span", "distribution_feeder", "water_main"}
 TOTAL_CUSTOMERS = 3_200_000
 TOTAL_POPULATION = 8_000_000
 
+# Residents behind one electricity account. DERIVED, not chosen: it is simply
+# the ratio implied by the service territory above. An earlier version
+# hard-coded 2.4, which contradicted this config (8.0M/3.2M = 2.5) and had no
+# basis. Deriving it means the figure cannot drift from the estate it describes.
+#
+# For corroboration rather than justification: US average household size was
+# ~2.5 persons in the 2024 ACS 1-year estimates. Note that utility customer
+# accounts include commercial and industrial connections, so residents-per-
+# account and household size are not the same quantity in general -- for SGW
+# the territory ratio is the correct derivation.
+RESIDENTS_PER_ACCOUNT = TOTAL_POPULATION / TOTAL_CUSTOMERS   # = 2.5
+
 # Materials by class, with (name, weight, relative_fragility).
 # relative_fragility multiplies the baseline hazard response: cast iron mains
 # and wood poles are the classic problem populations.
@@ -77,6 +89,14 @@ DEFAULT_MATERIAL = [("standard", 1.0, 1.0)]
 # Criticality tiers. Tier 1 assets serve designated critical load
 # (hospitals, dialysis centres, emergency services, care homes).
 CRITICALITY_WEIGHTS = [0.06, 0.19, 0.75]   # tier 1, 2, 3
+
+# How many people-equivalent one critical facility (hospital, dialysis centre,
+# care home) counts for in the consequence score. THIS ONE IS ARBITRARY and we
+# say so: it encodes a value judgement about how much more a hospital matters
+# than a household. No research supports a specific figure. It is exposed as a
+# tunable so the client sets it, and the risk ranking's sensitivity to it is
+# reported rather than hidden.
+CRITICAL_FACILITY_WEIGHT = 500.0
 
 # ------------------------------------------------------------------ hazards
 HAZARDS = ("hurricane", "heatwave", "inland_flood", "wildfire", "baseline")

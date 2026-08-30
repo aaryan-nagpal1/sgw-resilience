@@ -1,0 +1,6 @@
+check,n,accuracy
+material recovered,3334,1.0
+diameter unit recovered (1% tol),800,1.0
+install year imputed (within 10 yrs),262,0.7252
+duplicate detection (recall),52,0.8846
+duplicate detection (precision),46,1.0

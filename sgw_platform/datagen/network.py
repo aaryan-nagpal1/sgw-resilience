@@ -12,6 +12,8 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 
+from . import config as C
+
 
 def _nearest(src: pd.DataFrame, dst: pd.DataFrame, k: int = 1):
     """Index of the nearest dst row for each src row (planar approximation --
@@ -141,13 +143,20 @@ def compute_consequence(df: pd.DataFrame, G: nx.DiGraph) -> pd.DataFrame:
         })
 
     cons = pd.DataFrame(out)
-    # A single headline consequence figure, in "people-equivalent affected",
-    # weighting critical facilities heavily. Weights are an explicit policy
-    # choice and belong in the assumptions register, not buried in code.
+    # A single headline consequence figure in "people-equivalent affected".
+    #
+    # Two different kinds of number are combined here, and the distinction
+    # matters when defending the ranking:
+    #   RESIDENTS_PER_ACCOUNT is DERIVED from the service territory (8.0M
+    #     residents / 3.2M accounts). It is not a free parameter.
+    #   CRITICAL_FACILITY_WEIGHT is a POLICY CHOICE with no empirical basis.
+    #     It encodes how much more a hospital matters than a household, which
+    #     is a question for the client, not the modeller. Exposed as a tunable
+    #     and carried in the PRD assumptions register (A6).
     cons["consequence_score"] = (
-        cons.customers_affected * 2.4                 # ~2.4 residents/account
+        cons.customers_affected * C.RESIDENTS_PER_ACCOUNT
         + cons.population_water_affected * 1.0
         + cons.cascade_population_water * 1.0
-        + cons.critical_facilities_affected * 500.0   # policy weight
+        + cons.critical_facilities_affected * C.CRITICAL_FACILITY_WEIGHT
     ).round(1)
     return cons

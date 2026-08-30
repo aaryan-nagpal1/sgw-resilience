@@ -1,0 +1,10 @@
+model,PR-AUC,ROC-AUC,Brier,precision@50,loss capture@50,precision@200,loss capture@200
+Prevalence (null),0.0041,0.5,0.0041,0.0,0.0,0.0,0.0
+Condition score (current practice),0.0204,0.8219,0.004,0.02,0.0018,0.04,0.0214
+Planner heuristic (old + windy),0.0077,0.5195,0.004,0.16,0.0094,0.095,0.0977
+Wind fragility curve (published form),0.016,0.6038,0.0041,0.22,0.0133,0.1,0.0204
+LightGBM (uncalibrated),0.1407,0.8853,0.0038,0.5,0.1061,0.3,0.2776
+LightGBM + Platt,0.1407,0.8853,0.0037,0.5,0.1061,0.3,0.2776
+LightGBM + isotonic,0.1081,0.883,0.0038,0.52,0.1103,0.265,0.279
+"LightGBM + isotonic, ties broken",0.1407,0.8853,0.0038,0.5,0.1061,0.3,0.2776
+Per-hazard models,0.0972,0.795,0.004,0.42,0.0604,0.285,0.2659

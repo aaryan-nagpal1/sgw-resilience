@@ -1,0 +1,10 @@
+,0
+instrumented_assets,66.0
+degrading,24.0
+detected,24.0
+missed,0.0
+false_alarms,0.0
+correct_quiet,42.0
+recall,1.0
+precision,1.0
+median_days_after_onset,22.9

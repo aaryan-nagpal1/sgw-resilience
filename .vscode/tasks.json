@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run full pipeline (generate → W1 → W2 → W4)",
+      "type": "shell",
+      "command": "./.venv/bin/python -m sgw_platform.datagen.generate --out data && ./.venv/bin/python scripts/run_w1.py && ./.venv/bin/python scripts/run_w2.py && ./.venv/bin/python scripts/run_w4.py",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "Launch Streamlit app",
+      "type": "shell",
+      "command": "./.venv/bin/streamlit run app/main.py",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "isBackground": true
+    },
+    {
+      "label": "Build PDFs (PRD + briefing)",
+      "type": "shell",
+      "command": "./deliverables/tex/build.sh",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ]
+}
