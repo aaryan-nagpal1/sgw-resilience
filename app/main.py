@@ -47,6 +47,18 @@ def load():
 
 risk, crews, plan_actions, plan_staging, anomalies, mc, exposure = load()
 
+
+@st.cache_data(show_spinner=False)
+def solve_cached(scenario_id, budget, forbidden):
+    sub = risk[risk.scenario_id == scenario_id]
+    return O.build_and_solve(sub, crews, budget_usd=budget, forbidden=set(forbidden))
+
+
+@st.cache_data(show_spinner=False)
+def greedy_cached(scenario_id, budget):
+    sub = risk[risk.scenario_id == scenario_id]
+    return B.rank_by_risk(sub, crews, budget)
+
 st.sidebar.markdown(f"### SGW Resilience Operations")
 st.sidebar.caption("Prototype — decision workflow demonstration")
 scenarios = (risk.groupby(["scenario_id", "hazard"]).failed.sum()
@@ -60,7 +72,7 @@ st.sidebar.metric("Assets assessed", f"{len(r):,}")
 st.sidebar.metric("Above 1% failure risk", int((r.p_failure > 0.01).sum()))
 st.sidebar.metric("Expected consequence",
                   f"{int((r.p_failure * r.consequence_score).sum()):,}")
-st.sidebar.caption("Consequence is in people-equivalent: customers x 2.4, "
+st.sidebar.caption("Consequence is in people-equivalent: customers x 2.5, "
                    "plus water population, plus 500 per critical facility.")
 
 tabs = st.tabs(["Situation", "Response plan", "Copilot", "Situation report",
@@ -126,24 +138,35 @@ with tabs[1]:
     st.subheader("Recommended pre-emptive plan")
     budget = st.slider("Budget (USD)", 100_000, 1_500_000, 750_000, 50_000)
     veto = st.multiselect("Dispatcher veto — actions to forbid",
-                          options=sorted(plan_actions.asset_id.tolist()))
-    if st.button("Re-solve", type="primary") or "plan" not in st.session_state:
-        with st.spinner("Solving..."):
-            st.session_state.plan = O.build_and_solve(
-                r, crews, budget_usd=budget, forbidden=set(veto))
-            st.session_state.base = B.rank_by_risk(r, crews, budget)
-    p, base = st.session_state.plan, st.session_state.base
+                          options=sorted(plan_actions.asset_id.tolist()),
+                          help="Forbid an action. The plan re-solves immediately and "
+                               "the cost of the override is shown.")
+    # Solve on every change rather than behind a button. An earlier version
+    # required clicking "Re-solve" after choosing a veto; if you forgot, the
+    # override cost silently read +0 because the displayed plan was still the
+    # un-vetoed one. At ~0.1 s a solve, gating it behind a button bought
+    # nothing and created a trap.
+    with st.spinner("Solving..."):
+        p = solve_cached(sid, budget, tuple(sorted(veto)))
+        unvetoed = solve_cached(sid, budget, ()) if veto else p
+        base = greedy_cached(sid, budget)
 
-    k = st.columns(4)
+    k = st.columns(5 if veto else 4)
     k[0].metric("Actions", len(p.actions))
     k[1].metric("Spend", f"${p.spend:,.0f}", f"budget ${budget:,.0f}")
     k[2].metric("Crews staged", int(p.staging.crews_staged.sum()))
     k[3].metric("Solve time", f"{p.solve_seconds:.2f}s", p.status)
+    if veto:
+        delta = p.objective - unvetoed.objective
+        pct = delta / max(unvetoed.objective, 1) * 100
+        k[4].metric("Cost of override", f"+{delta:,.0f}",
+                    f"+{pct:.2f}% expected harm", delta_color="inverse")
 
     if veto:
-        st.warning(f"{len(veto)} action(s) vetoed by the dispatcher. The plan below "
-                   f"is the best available under that constraint — the override is "
-                   f"permitted, and its cost is shown.")
+        st.warning(f"{len(veto)} action(s) vetoed by the dispatcher. The plan below is "
+                   f"the best available under that constraint. The override is permitted; "
+                   f"'Cost of override' is the extra expected harm it causes, measured in "
+                   f"people-equivalent.")
 
     c1, c2 = st.columns(2)
     with c1:
