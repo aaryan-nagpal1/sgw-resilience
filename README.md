@@ -12,6 +12,12 @@ likely to fail, how many people will be affected, and what SGW should do about i
 is a decision support layer. It sits above SGW's existing systems, recommends actions, and
 records what a person decided.
 
+![Impact of asset failures across both networks](figures/cascade_consequence.png)
+
+Two distribution substations reach the estate's six highest-impact assets because of the
+water supply they would cut off, not the customers they power. Ranked on electricity alone
+they sit 8th and 16th.
+
 ---
 
 ## Repository map
@@ -37,6 +43,9 @@ figures/            Charts written by the evaluation scripts
 ---
 
 ## Running it
+
+Built and tested on Python 3.13. Requires **Python 3.10 or newer** — the type
+annotations used in the tool schemas are evaluated at runtime.
 
 ```bash
 python -m venv .venv && ./.venv/bin/pip install -r requirements.txt
